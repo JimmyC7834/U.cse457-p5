@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 971745630d73414408439e497724ee17, type: 3}
   m_Name: DebugSimulationProfile
   m_EditorClassIdentifier: 
-  _springConstant: 1
+  _springConstant: 10
   _eqmDist: 0.1
-  _damping: 0.1
+  _damping: 0.5
   _lipidRadius: 0.125
   _lipidMass: 0
   _velocityRestitution: 0.9
