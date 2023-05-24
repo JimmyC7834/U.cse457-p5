@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 971745630d73414408439e497724ee17, type: 3}
   m_Name: DebugSimulationProfile
   m_EditorClassIdentifier: 
+  _lipidRadius: 0.125
+  _drag: 0
   _attractionRadius: 1
   _headAttractionForceCurve:
     serializedVersion: 2
@@ -79,4 +81,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _attractionForce: 2
+  _attractionForce: 0.5
+  _eqmDist: 0.025
+  _maxDist: 0
+  _velocityRestitution: 0.9
+  _forceRestitution: {x: 1, y: 1, z: 1}

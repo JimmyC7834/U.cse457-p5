@@ -345,6 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4dc2852b7c36c4ba3bdc4a1a58bbac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _profile: {fileID: 11400000, guid: f24d30839483d1540a40a550973329d7, type: 2}
   _membraneSize: {x: 20, y: 20}
   _spacing: 1
   _prefab: {fileID: 3341655969578989468, guid: 46a46267fe948b642a6d2ee9b9a6f9df, type: 3}

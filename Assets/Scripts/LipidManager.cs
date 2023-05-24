@@ -6,6 +6,8 @@ using UnityEngine.Pool;
 
 public class LipidManager : MonoBehaviour
 {
+    [SerializeField] private SimulationProfile _profile;
+
     [SerializeField] private Vector2Int _membraneSize;
     [SerializeField] private float _spacing;
     [SerializeField] private LipidController _prefab;
@@ -56,7 +58,67 @@ public class LipidManager : MonoBehaviour
         
         foreach (LipidController lipid in _lipids)
         {
-            lipid.PhysicsUpdate();
+            PhysicsUpdate(lipid);
         }
+    }
+    
+    public void PhysicsUpdate(LipidController lipid)
+    {
+        float attractionRadius = _profile.AttractionRadius;
+
+        Collider[] results = Physics.OverlapSphere(lipid.Position, attractionRadius);
+        Vector3 totalHeadV = Vector3.zero;
+        Vector3 totalTailV = Vector3.zero;
+
+        foreach (Collider c in results)
+        {
+            LipidController other;
+            if (!c.TryGetComponent<LipidController>(out other)) continue;
+            if (other == lipid) continue;
+
+            // float headF = 
+            //     _profile.HeadAttractionForce(Vector3.Distance(other.HeadPosition, lipid.HeadPosition));
+            //
+            // float tailF =
+            //     _profile.TailAttractionForce(Vector3.Distance(other.TailPosition, lipid.TailPosition));
+            
+            float headF = 1f / Vector3.Distance(other.HeadPosition, lipid.HeadPosition);
+            
+            float tailF = 1f / Vector3.Distance(other.TailPosition, lipid.TailPosition);
+
+            
+            totalHeadV += headF * (other.HeadPosition - lipid.Position).normalized;
+            totalTailV += tailF * (other.TailPosition - lipid.Position).normalized;
+        }
+
+        lipid.HeadRigidbody.velocity = totalHeadV;
+        lipid.TailRigidbody.velocity = totalTailV;
+    }
+    
+    public void PhysicsUpdate2(LipidController lipid)
+    {
+        float attractionRadius = _profile.AttractionRadius;
+        float attractionForce = _profile.AttractionForce;
+
+        Vector3 totalHeadV = Vector3.zero;
+        Vector3 totalTailV = Vector3.zero;
+
+        foreach (LipidController other in _lipids)
+        {
+            if (other == lipid) continue;
+            float headDist = Vector3.Distance(other.HeadPosition, lipid.HeadPosition);
+            float tailDist = Vector3.Distance(other.TailPosition, lipid.TailPosition);
+            
+            if ((headDist + tailDist) / 2 < attractionRadius) continue;
+
+            float headF = attractionForce * 1f / (headDist * headDist);
+            float tailF = attractionForce * 1f / (tailDist * tailDist);
+            
+            totalHeadV += headF * (other.HeadPosition - lipid.Position).normalized;
+            totalTailV += tailF * (other.TailPosition - lipid.Position).normalized;
+        }
+
+        lipid.HeadRigidbody.velocity = totalHeadV;
+        lipid.TailRigidbody.velocity = totalTailV;
     }
 }

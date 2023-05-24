@@ -141,9 +141,9 @@ GameObject:
   - component: {fileID: 3341655969578989469}
   - component: {fileID: 3341655969578989538}
   - component: {fileID: 3341655969578989539}
-  - component: {fileID: 3341655969578989536}
   - component: {fileID: 3341655969578989537}
   - component: {fileID: 3341655969578989468}
+  - component: {fileID: -1563570574898893756}
   m_Layer: 6
   m_Name: lipid
   m_TagString: Untagged
@@ -217,19 +217,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &3341655969578989536
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3341655969578989542}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &3341655969578989537
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -258,9 +245,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aad08d988bab898418d9c711bc76cc07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _profile: {fileID: 11400000, guid: f24d30839483d1540a40a550973329d7, type: 2}
-  _head: {fileID: 3341655969578989469}
-  _tail: {fileID: 3341655968705464041}
-  _transform: {fileID: 0}
-  _headRigidbody: {fileID: 3341655969578989537}
-  _tailRigidbody: {fileID: 3341655968705464045}
+  Head: {fileID: 3341655969578989469}
+  Tail: {fileID: 3341655968705464041}
+  HeadRigidbody: {fileID: 3341655969578989537}
+  TailRigidbody: {fileID: 3341655968705464045}
+--- !u!135 &-1563570574898893756
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3341655969578989542}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
