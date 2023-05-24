@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using UnityEngine;
 
 public class SimpleLipid : MonoBehaviour
@@ -32,19 +30,27 @@ public struct LipidInfo
     }
 }
 
-public readonly struct LipidBond
+public readonly struct Pair
 {
-    private readonly (int, int) _pair;
-    public readonly float MinDist;
-    public readonly float MaxDist;
+    public readonly int Fst;
+    public readonly int Snd;
 
-    public int Fst => _pair.Item1;
-    public int Snd => _pair.Item2;
-
-    public LipidBond(int fst, int snd, float minDist, float maxDist)
+    public Pair(int fst, int snd)
     {
-        _pair = (fst, snd);
-        MinDist = minDist;
-        MaxDist = maxDist;
+        Fst = fst;
+        Snd = snd;
+    }
+
+    public override int GetHashCode()
+    {
+        return Fst ^ Snd;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null) return false;
+        if (obj.GetType() != typeof(Pair)) return false;
+        Pair other = (Pair) obj;
+        return (other.Fst == Snd && other.Snd == Fst) || (other.Fst == Fst && other.Snd == Snd);
     }
 }

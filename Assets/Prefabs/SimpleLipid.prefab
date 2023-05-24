@@ -94,7 +94,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8638088810488028794}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.1
   m_UseGravity: 0
@@ -114,7 +114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cad97da55c4bf8f43a65b612fd073610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transform: {fileID: 8638088810488028774}
   Rigidbody: {fileID: 8638088810488028768}
   NeighborIndices: 
 --- !u!136 &3577880944361878895

@@ -1,35 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "SimulationProfile")]
 public class SimulationProfile : ScriptableObject
 {
-    [SerializeField] private float _lipidRadius;
-    [SerializeField] private float _drag;
-    
-    [SerializeField] private float _attractionRadius;
-    [SerializeField] private AnimationCurve _headAttractionForceCurve;
-    [SerializeField] private AnimationCurve _tailAttractionForceCurve;
-    
-    [SerializeField] private float _attractionForce;
+    [Header("Spring Joint Settings")]
+    [SerializeField] private float _springConstant;
     [SerializeField] private float _eqmDist;
-    [SerializeField] private float _maxDist;
+    [SerializeField] private float _damping;
 
-    [FormerlySerializedAs("_restitution")]
+    [Header("Simulation Settings")]
+    [SerializeField] private float _lipidRadius;
+    [SerializeField] private float _lipidMass;
     [Range(0f, 1f)]
     [SerializeField] private float _velocityRestitution;
-    [SerializeField] private Vector3 _forceRestitution;
 
     public float LipidRadius => _lipidRadius;
+    public float LipidMass => _lipidMass;
     public float EqmDist => _eqmDist;
-    public float AttractionRadius => _attractionRadius;
-    public float AttractionForce => _attractionForce;
+    public float SpringConstant => _springConstant;
     public float VelocityRestitution => _velocityRestitution;
-    public Vector3 ForceRestitution => _forceRestitution;
-    public float MaxDist => _maxDist;
-    
-    public float HeadAttractionForce(float dist) => _attractionForce * _headAttractionForceCurve.Evaluate(dist);
-    public float TailAttractionForce(float dist) => _attractionForce * _tailAttractionForceCurve.Evaluate(dist);
+    public float Damping => _damping;
+
+    // [SerializeField] private AnimationCurve _headAttractionForceCurve;
+    // [SerializeField] private AnimationCurve _tailAttractionForceCurve;
+    // public float HeadAttractionForce(float dist) => _attractionForce * _headAttractionForceCurve.Evaluate(dist);
+    // public float TailAttractionForce(float dist) => _attractionForce * _tailAttractionForceCurve.Evaluate(dist);
 }
