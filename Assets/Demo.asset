@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _springConstant: 2
   _restLength: 0.5
-  _damp: 1
-  _maxLength: 0.75
-  _minLength: 0.15
+  _damp: 2
+  _maxLength: 0.7
+  _minLength: 0.3
   _lipidMass: 10
-  _velocityRestitution: 1
+  _velocityRestitution: 0.9

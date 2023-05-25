@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
-using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class PhysicsSimulation : MonoBehaviour
 {
-    private CustomCollider _prefab; 
+    // private CustomCollider _prefab; 
     
     // Colliders in the scene
-    private List<CustomCollider> _colliders;
+    // private List<CustomCollider> _colliders;
     private List<PhysicsObject> _physicalObjects;
 
     // Initialize data
     private void Start()
     {
-        _colliders = new List<CustomCollider>(FindObjectsOfType<CustomCollider>());
+        // _colliders = new List<CustomCollider>(FindObjectsOfType<CustomCollider>());
         _physicalObjects = new List<PhysicsObject>();
     }
 

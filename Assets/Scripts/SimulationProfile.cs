@@ -6,7 +6,7 @@ public class SimulationProfile : ScriptableObject
     [Header("Spring Joint Settings")]
     [SerializeField] private float _springConstant;
     [SerializeField] private float _restLength;
-    [Range(0f, 1f)]
+    [Range(0f, 10f)]
     [SerializeField] private float _damp;
     [SerializeField] private float _maxLength;
     [SerializeField] private float _minLength;
