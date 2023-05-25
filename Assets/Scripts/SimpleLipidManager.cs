@@ -8,7 +8,8 @@ public class SimpleLipidManager : MonoBehaviour
     [SerializeField] private SimulationProfile _profile;
     [SerializeField] private Rigidbody _prefab;
     [SerializeField] private float _waitTime;
-    
+
+    [SerializeField] private Rigidbody _food;
     [SerializeField] private Vector2Int _membraneSize;
     [SerializeField] private float _spacing;
     [SerializeField] private bool _showDebug;
@@ -25,7 +26,7 @@ public class SimpleLipidManager : MonoBehaviour
     private void Awake()
     {
         _transform = transform;
-        _lipids = new Rigidbody[TotalLipidCount];
+        _lipids = new Rigidbody[TotalLipidCount + 1];
         _bonds = new HashSet<Pair>();
         _pool = new ObjectPool<Rigidbody>(
             () => Instantiate(_prefab, _transform) as Rigidbody,
@@ -40,6 +41,7 @@ public class SimpleLipidManager : MonoBehaviour
 
     private void Initialize()
     {
+        Vector3 offset = new Vector3(-_spacing * _membraneSize.x / 2, 0, -_spacing * _membraneSize.y / 2);
         for (int i = 0; i < _membraneSize.x; i++)
         {
             for (int j = 0; j < _membraneSize.y; j++)
@@ -49,7 +51,7 @@ public class SimpleLipidManager : MonoBehaviour
                 _lipids[index].transform.position = new Vector3(
                     i * _spacing - ((j % 2 == 1) ? _spacing / 2 : 0),
                     _transform.position.y,
-                    _spacing * j);
+                    _spacing * j) + offset;
                 
                 // add bonds
                 if (j > 0) _bonds.Add(new Pair(index, index - 1));
@@ -57,17 +59,19 @@ public class SimpleLipidManager : MonoBehaviour
                 if (j < _membraneSize.y - 1) _bonds.Add(new Pair(index, index + 1));
                 if (i < _membraneSize.x - 1) _bonds.Add(new Pair(index, index + _membraneSize.y));
                 
-                if (i > 0 && j < _membraneSize.y - 1) 
-                    _bonds.Add(new Pair(index, index - _membraneSize.y + 1));
-                if (i < _membraneSize.x - 1 && j < _membraneSize.y - 1) 
-                    _bonds.Add(new Pair(index, index + _membraneSize.y + 1));
+                // if (i > 0 && j < _membraneSize.y - 1) 
+                //     _bonds.Add(new Pair(index, index - _membraneSize.y + 1));
+                // if (i < _membraneSize.x - 1 && j < _membraneSize.y - 1) 
+                //     _bonds.Add(new Pair(index, index + _membraneSize.y + 1));
             }
         }
+
+        _lipids[TotalLipidCount] = _food;
         
-        Debug.Log($"bond count: {_bonds.Count}, lipid count: {TotalLipidCount}" +
-                  $", bond expected: {(_membraneSize.x - 1) * (_membraneSize.y - 1) * 4 + _membraneSize.x + _membraneSize.y - 2}");
-        Assert.IsTrue(
-            _bonds.Count == (_membraneSize.x - 1) * (_membraneSize.y - 1) * 4 + _membraneSize.x + _membraneSize.y - 2);
+        // Debug.Log($"bond count: {_bonds.Count}, lipid count: {TotalLipidCount}" +
+        //           $", bond expected: {(_membraneSize.x - 1) * (_membraneSize.y - 1) * 4 + _membraneSize.x + _membraneSize.y - 2}");
+        // Assert.IsTrue(
+        //     _bonds.Count == (_membraneSize.x - 1) * (_membraneSize.y - 1) * 4 + _membraneSize.x + _membraneSize.y - 2);
 
         Invoke(nameof(StartSimulation), _waitTime);
     }
@@ -88,34 +92,43 @@ public class SimpleLipidManager : MonoBehaviour
     {
         // physics update
         foreach (Pair bond in _bonds)
-            BondPhysicsUpdate(bond.Fst, bond.Snd);
+            BondPhysicsUpdate(_lipids[bond.Fst], _lipids[bond.Snd]);
         
         // simulate drag
         foreach (Rigidbody lipid in _lipids)
             lipid.velocity *= _profile.VelocityRestitution;
     }
 
-    public void BondPhysicsUpdate(int fst, int snd)
+    public void BondPhysicsUpdate(Rigidbody self, Rigidbody other)
     {
-        float k = _profile.SpringConstant;
-        float lipidR = _profile.LipidRadius;
-        float eqmDist = _profile.EqmDist;
-
-        Rigidbody self = _lipids[fst];
-        Rigidbody other = _lipids[snd];
-
-        float dist = Vector3.Distance(other.position, self.position);
+        float maxDist = _profile.MaxLength;
         
-        // total contraction force of the spring 
-        float forceMag = k * (dist - lipidR * 2 - eqmDist);
-
+        float k = _profile.SpringConstant;
+        float eqmDist = _profile.RestLength;
+        
+        float dist = Vector3.Distance(other.position, self.position);
         Vector3 dir = (other.position - self.position).normalized;
+        
+        if (dist > maxDist)
+        {
+            float dD = dist - maxDist;
+            Vector3 dx = dD * -.5f * dir;
+            self.position += -dx;
+            other.position += dx;
+        }
+
+        // total contraction force of the spring 
+        float forceMag = k * (dist - eqmDist);
+
         Vector3 v = forceMag * dir;
+
+        // if (self.position.y < -.75f) v += -(self.position - Vector3.down).normalized * 3f;
+        // if (other.position.y < -.75f) v += -(other.position - Vector3.down).normalized * 3f;
         
         // apply half of the total force to each end
-        self.velocity += v / 2 - _profile.Damping * self.velocity;
-        other.velocity += -v / 2 - _profile.Damping * other.velocity;
-
+        self.velocity += v / 2 - _profile.Damp * self.velocity;
+        other.velocity += -v / 2 - _profile.Damp * other.velocity;
+        
         if (_showDebug) Debug.DrawLine(self.position, other.position);
     }
 }

@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 971745630d73414408439e497724ee17, type: 3}
-  m_Name: DebugSimulationProfile
+  m_Name: Membrane
   m_EditorClassIdentifier: 
-  _springConstant: 10
-  _eqmDist: 0.1
-  _damping: 0.5
-  _lipidRadius: 0.125
-  _lipidMass: 0
-  _velocityRestitution: 0.9
+  _springConstant: 2
+  _restLength: 0.5
+  _damp: 1
+  _maxLength: 0.75
+  _minLength: 0.15
+  _lipidMass: 10
+  _velocityRestitution: 1
