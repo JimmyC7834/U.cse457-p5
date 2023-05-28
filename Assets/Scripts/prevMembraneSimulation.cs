@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MembraneSimulation : MonoBehaviour
+public class DoubleMemSim : MonoBehaviour
 {
     [SerializeField] private SimulationProfile _profile;
     [SerializeField] private GameObject _prefab;
@@ -9,7 +9,6 @@ public class MembraneSimulation : MonoBehaviour
     [SerializeField] private Vector2Int _membraneSize;
     [SerializeField] private float _spacing;
     private PhysicsObject[] _lipids;
-    private PhysicsObject[] _lipids2;
     private SoftBodySimulation _softBodySimulation;
 
     public int TotalLipidCount => _membraneSize.x * _membraneSize.y;
@@ -18,7 +17,6 @@ public class MembraneSimulation : MonoBehaviour
     {
         _softBodySimulation = new SoftBodySimulation();
         _lipids = new PhysicsObject[TotalLipidCount];
-        _lipids2 = new PhysicsObject[TotalLipidCount];
     }
 
     private void Start()
@@ -63,17 +61,8 @@ public class MembraneSimulation : MonoBehaviour
                 PhysicsObject node = CreateLipid(pos);
                 _softBodySimulation.AddNode(node);
                 _lipids[index] = node;
-
-                // Second membrane sheet
-                pos.y -= 1;
-
-                PhysicsObject node2 = CreateLipid(pos);
-                _softBodySimulation.AddNode(node2);
-                _lipids2[index] = node2;
             }
         }
-
-        ChangeLipids2ColorToOrange();
 
         // add bonds
         for (int i = 0; i < _membraneSize.x; i++)
@@ -82,23 +71,12 @@ public class MembraneSimulation : MonoBehaviour
             {
                 int index = i * _membraneSize.y + j;
 
-                _softBodySimulation.AddJoint(CreateJoint(
-                        _lipids[index],
-                        _lipids2[index],
-                        true
-                    ));
-
                 // add bonds
                 if (j < _membraneSize.y - 1)
                 {
                     _softBodySimulation.AddJoint(CreateJoint(
                             _lipids[index],
                             _lipids[index + 1],
-                            false
-                        ));
-                    _softBodySimulation.AddJoint(CreateJoint(
-                            _lipids2[index],
-                            _lipids2[index + 1],
                             false
                         ));
                 }
@@ -109,12 +87,6 @@ public class MembraneSimulation : MonoBehaviour
                     _softBodySimulation.AddJoint(CreateJoint(
                         _lipids[index],
                         _lipids[index + _membraneSize.y],
-                        false
-                    ));
-
-                    _softBodySimulation.AddJoint(CreateJoint(
-                        _lipids2[index],
-                        _lipids2[index + _membraneSize.y],
                         false
                     ));
                 }
@@ -129,15 +101,10 @@ public class MembraneSimulation : MonoBehaviour
                             _lipids[index + _membraneSize.y + 1],
                             false
                         ));
-
-                        _softBodySimulation.AddJoint(CreateJoint(
-                            _lipids2[index],
-                            _lipids2[index + _membraneSize.y + 1],
-                            false
-                        ));
                     }
 
-                } else
+                }
+                else
                 {
                     if (j > 0 && i < _membraneSize.x - 1)
                     {
@@ -146,32 +113,10 @@ public class MembraneSimulation : MonoBehaviour
                             _lipids[index + _membraneSize.y - 1],
                             false
                         ));
-                        _softBodySimulation.AddJoint(CreateJoint(
-                            _lipids2[index],
-                            _lipids2[index + _membraneSize.y - 1],
-                            false
-                        ));
                     }
-                        
+
                 }
             }
         }
     }
-
-    private void ChangeLipids2ColorToOrange()
-    {
-        foreach (PhysicsObject lipid in _lipids2)
-        {
-            Renderer renderer = lipid.Rigidbody.GetComponent<Renderer>();
-
-            if (renderer != null)
-            {
-                Material orangeMaterial = new Material(Shader.Find("Standard"));
-                orangeMaterial.color = new Color(1f, 0.5f, 0f);
-                renderer.material = orangeMaterial;
-            }
-        }
-    }
-
 }
-

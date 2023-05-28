@@ -59,9 +59,15 @@ public class SoftBodySimulation
         PhysicsObject fst = joint.Fst;
         PhysicsObject snd = joint.Snd;
         float damp = joint.Damp;
+        bool isBetweenMembrane = joint.IsBetweenMembrane;
 
         float dist = Vector3.Distance(snd.Position, fst.Position);
         Vector3 dir = (snd.Position - fst.Position).normalized;
+
+        if (isBetweenMembrane)
+        {
+            k *= 2;
+        }
 
         // contraction force of each end spring 
         float forceMag = k * (dist - restLength) * 0.5f;
@@ -120,10 +126,11 @@ public struct SpringJoint
     public float Damp { get; private set; }
     public PhysicsObject Fst { get; private set; }
     public PhysicsObject Snd { get; private set; }
+    public bool IsBetweenMembrane { get; private set; }
 
     public SpringJoint(
         PhysicsObject fst, PhysicsObject snd, float k, float restLength,
-        float maxDist, float minDist, float damp, bool enabled)
+        float maxDist, float minDist, float damp, bool enabled, bool isBetweenMembrane)
     {
         Assert.IsTrue(maxDist >= minDist);
         
@@ -135,6 +142,7 @@ public struct SpringJoint
         MinDist = minDist;
         Damp = damp;
         Enabled = enabled;
+        IsBetweenMembrane = isBetweenMembrane;
     }
 }
 
