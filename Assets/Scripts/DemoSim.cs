@@ -27,12 +27,12 @@ public class DemoSim : MonoBehaviour
         foreach (PhysicsObject physicsObject in _lipids)
             _softBodySimulation.AddNode(physicsObject);
         
-        _softBodySimulation.AddJoint(CreateJoint(_lipids[0], _lipids[1], false));
-        _softBodySimulation.AddJoint(CreateJoint(_lipids[0], _lipids[2], false));
-        _softBodySimulation.AddJoint(CreateJoint(_lipids[0], _lipids[3], false));
-        _softBodySimulation.AddJoint(CreateJoint(_lipids[1], _lipids[2], false));
-        _softBodySimulation.AddJoint(CreateJoint(_lipids[3], _lipids[2], false));
-        _softBodySimulation.AddJoint(CreateJoint(_lipids[3], _lipids[1], false));
+        _softBodySimulation.AddJoint(CreateJoint(_lipids[0], _lipids[1]));
+        _softBodySimulation.AddJoint(CreateJoint(_lipids[0], _lipids[2]));
+        _softBodySimulation.AddJoint(CreateJoint(_lipids[0], _lipids[3]));
+        _softBodySimulation.AddJoint(CreateJoint(_lipids[1], _lipids[2]));
+        _softBodySimulation.AddJoint(CreateJoint(_lipids[3], _lipids[2]));
+        _softBodySimulation.AddJoint(CreateJoint(_lipids[3], _lipids[1]));
         
         _softBodySimulation.Enabled = true;
         _softBodySimulation.ShowDebug = _showDebug;
@@ -45,9 +45,9 @@ public class DemoSim : MonoBehaviour
         _softBodySimulation.Update();
     }
 
-    private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd, bool isDiagonal) =>
+    private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd) =>
         new SpringJoint(fst, snd, _profile.SpringConstant, _profile.RestLength,
-            _profile.MaxLength, _profile.MinLength, _profile.Damp, true, isDiagonal);
+            _profile.MaxLength, _profile.MinLength, _profile.Damp, true);
     
     private PhysicsObject CreateLipid(Vector3 position) =>
         new PhysicsObject(_profile.LipidMass, 0f, position, Vector3.zero, Instantiate(_prefab,transform));

@@ -11,6 +11,14 @@ public class SimulationProfile : ScriptableObject
     [SerializeField] private float _maxLength;
     [SerializeField] private float _minLength;
 
+    [Header("Membrane Joint Settings")]
+    [SerializeField] private float _memSpringConstant;
+    [SerializeField] private float _memRestLength;
+    [Range(0f, 10f)]
+    [SerializeField] private float _memDamp;
+    [SerializeField] private float _memMaxLength;
+    [SerializeField] private float _memMinLength;
+
     [Header("Simulation Settings")]
     // [SerializeField] private float _lipidRadius;
     [SerializeField] private float _lipidMass;
@@ -24,6 +32,12 @@ public class SimulationProfile : ScriptableObject
     public float Damp => _damp;
     public float MaxLength => _maxLength;
     public float MinLength => _minLength;
+
+    public float MemRestLength => _memRestLength;
+    public float MemSpringConstant => _memSpringConstant;
+    public float MemDamp => _memDamp;
+    public float MemMaxLength => _memMaxLength;
+    public float MemMinLength => _memMinLength;
 
     // [SerializeField] private AnimationCurve _headAttractionForceCurve;
     // [SerializeField] private AnimationCurve _tailAttractionForceCurve;

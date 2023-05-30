@@ -17,5 +17,10 @@ MonoBehaviour:
   _damp: 1
   _maxLength: 0.75
   _minLength: 0.15
+  _memSpringConstant: 4
+  _memRestLength: 0.6
+  _memDamp: 1
+  _memMaxLength: 0.7
+  _memMinLength: 0.15
   _lipidMass: 10
   _velocityRestitution: 1

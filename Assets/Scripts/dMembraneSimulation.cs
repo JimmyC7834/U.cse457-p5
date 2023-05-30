@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class DoubleMemSim : MonoBehaviour
+public class dMembraneSimulation : MonoBehaviour
 {
     [SerializeField] private SimulationProfile _profile;
     [SerializeField] private GameObject _prefab;
@@ -9,6 +11,7 @@ public class DoubleMemSim : MonoBehaviour
     [SerializeField] private Vector2Int _membraneSize;
     [SerializeField] private float _spacing;
     private PhysicsObject[] _lipids;
+    private PhysicsObject[] _lipids2;
     private SoftBodySimulation _softBodySimulation;
 
     public int TotalLipidCount => _membraneSize.x * _membraneSize.y;
@@ -17,6 +20,7 @@ public class DoubleMemSim : MonoBehaviour
     {
         _softBodySimulation = new SoftBodySimulation();
         _lipids = new PhysicsObject[TotalLipidCount];
+        _lipids2 = new PhysicsObject[TotalLipidCount];
     }
 
     private void Start()
@@ -31,9 +35,13 @@ public class DoubleMemSim : MonoBehaviour
         _softBodySimulation.Update();
     }
 
-    private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd, bool isBetweenMembrane) =>
+    private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd) =>
         new SpringJoint(fst, snd, _profile.SpringConstant, _profile.RestLength,
-            _profile.MaxLength, _profile.MinLength, _profile.Damp, true, isBetweenMembrane);
+            _profile.MaxLength, _profile.MinLength, _profile.Damp, true);
+
+    private SpringJoint CreateMembraneJoint(PhysicsObject fst, PhysicsObject snd) =>
+        new SpringJoint(fst, snd, _profile.MemSpringConstant, _profile.MemRestLength,
+            _profile.MemMaxLength, _profile.MemMinLength, _profile.MemDamp, true);
 
     private PhysicsObject CreateLipid(Vector3 position)
     {
@@ -61,8 +69,17 @@ public class DoubleMemSim : MonoBehaviour
                 PhysicsObject node = CreateLipid(pos);
                 _softBodySimulation.AddNode(node);
                 _lipids[index] = node;
+
+                // Second membrane sheet
+                pos.y -= 1;
+
+                PhysicsObject node2 = CreateLipid(pos);
+                _softBodySimulation.AddNode(node2);
+                _lipids2[index] = node2;
             }
         }
+
+        ChangeLipids2ColorToOrange();
 
         // add bonds
         for (int i = 0; i < _membraneSize.x; i++)
@@ -71,13 +88,21 @@ public class DoubleMemSim : MonoBehaviour
             {
                 int index = i * _membraneSize.y + j;
 
+                _softBodySimulation.AddJoint(CreateMembraneJoint(
+                        _lipids[index],
+                        _lipids2[index]
+                    ));
+
                 // add bonds
                 if (j < _membraneSize.y - 1)
                 {
                     _softBodySimulation.AddJoint(CreateJoint(
                             _lipids[index],
-                            _lipids[index + 1],
-                            false
+                            _lipids[index + 1]
+                        ));
+                    _softBodySimulation.AddJoint(CreateJoint(
+                            _lipids2[index],
+                            _lipids2[index + 1]
                         ));
                 }
 
@@ -86,8 +111,12 @@ public class DoubleMemSim : MonoBehaviour
                 {
                     _softBodySimulation.AddJoint(CreateJoint(
                         _lipids[index],
-                        _lipids[index + _membraneSize.y],
-                        false
+                        _lipids[index + _membraneSize.y]
+                    ));
+
+                    _softBodySimulation.AddJoint(CreateJoint(
+                        _lipids2[index],
+                        _lipids2[index + _membraneSize.y]
                     ));
                 }
 
@@ -98,8 +127,12 @@ public class DoubleMemSim : MonoBehaviour
 
                         _softBodySimulation.AddJoint(CreateJoint(
                             _lipids[index],
-                            _lipids[index + _membraneSize.y + 1],
-                            false
+                            _lipids[index + _membraneSize.y + 1]
+                        ));
+
+                        _softBodySimulation.AddJoint(CreateJoint(
+                            _lipids2[index],
+                            _lipids2[index + _membraneSize.y + 1]
                         ));
                     }
 
@@ -110,12 +143,30 @@ public class DoubleMemSim : MonoBehaviour
                     {
                         _softBodySimulation.AddJoint(CreateJoint(
                             _lipids[index],
-                            _lipids[index + _membraneSize.y - 1],
-                            false
+                            _lipids[index + _membraneSize.y - 1]
+                        ));
+                        _softBodySimulation.AddJoint(CreateJoint(
+                            _lipids2[index],
+                            _lipids2[index + _membraneSize.y - 1]
                         ));
                     }
 
                 }
+            }
+        }
+    }
+
+    private void ChangeLipids2ColorToOrange()
+    {
+        foreach (PhysicsObject lipid in _lipids2)
+        {
+            Renderer renderer = lipid.Rigidbody.GetComponent<Renderer>();
+
+            if (renderer != null)
+            {
+                Material orangeMaterial = new Material(Shader.Find("Standard"));
+                orangeMaterial.color = new Color(1f, 0.5f, 0f);
+                renderer.material = orangeMaterial;
             }
         }
     }

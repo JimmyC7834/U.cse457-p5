@@ -1212,7 +1212,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1648249396}
-  - component: {fileID: 1648249397}
+  - component: {fileID: 1648249398}
   m_Layer: 0
   m_Name: MembraneSim
   m_TagString: Untagged
@@ -1235,7 +1235,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1648249397
+--- !u!114 &1648249398
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1244,13 +1244,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1648249395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25cf1bc975ba4a8fba544dd62925407f, type: 3}
+  m_Script: {fileID: 11500000, guid: 96722352af00c9b469d88cea6462ccea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _profile: {fileID: 11400000, guid: f24d30839483d1540a40a550973329d7, type: 2}
   _prefab: {fileID: 8638088810488028794, guid: 2663d10db48868e4cbb6f3ad0491d64a, type: 3}
   _showDebug: 1
-  _membraneSize: {x: 30, y: 30}
+  _membraneSize: {x: 20, y: 20}
   _spacing: 0.25
 --- !u!1 &1660802279
 GameObject:
@@ -2092,8 +2092,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83217fa9ceb96844a62e4b43ee5bb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphere: {fileID: 0}
-  ring: {fileID: 0}
+  sphere: {fileID: 1440088345}
+  ring: {fileID: 2127559103}
   cylinderPrefab: {fileID: 0}
   numCylinders: 16
   height: 5
