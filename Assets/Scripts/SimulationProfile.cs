@@ -9,7 +9,6 @@ public class SimulationProfile : ScriptableObject
     [SerializeField] private JointSettings _lipidJointSettings;
 
     [Header("Simulation Settings")]
-    // [SerializeField] private float _lipidRadius;
     [SerializeField] private float _lipidMass;
     [Range(0f, 1f)]
     [SerializeField] private float _velocityRestitution;
