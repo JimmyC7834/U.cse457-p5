@@ -16,25 +16,27 @@ public class SoftBodySimulation
         _nodes = new List<PhysicsObject>();
     }
     
-    public void Update()
+    public void Update(float substep = 2)
     {
         if (!Enabled) return;
-        
-        // compute all the spring joint forces
-        foreach (SpringJoint joint in _joints)
-            ComputeJointForce(joint, ShowDebug);
-
-        // update all nodes' physics
-        foreach (PhysicsObject node in _nodes)
-            node.ComputePhysics();
-        
-        // solve for each constraints
-        foreach (SpringJoint joint in _joints)
-            SolveDistanceConstraint(joint);
-
-        // compute move velocity
-        foreach (PhysicsObject node in _nodes)
-            ComputeMoveVelocity(node);
+        for (int i = 0; i < substep; i++)
+        {
+            // compute all the spring joint forces
+            foreach (SpringJoint joint in _joints)
+                ComputeJointForce(joint, ShowDebug);
+            
+            // update all nodes' physics
+            foreach (PhysicsObject node in _nodes)
+                node.ComputePhysics();
+            
+            // solve for each constraints
+            foreach (SpringJoint joint in _joints)
+                SolveDistanceConstraint(joint);
+            
+            // compute move velocity
+            foreach (PhysicsObject node in _nodes)
+                ComputeMoveVelocity(node);
+        }
     }
 
     public void AddJoint(SpringJoint joint)
