@@ -19,7 +19,7 @@ public class CellSimulation : MonoBehaviour
     [SerializeField] private float _pressure;
     // toggle gravity
     [SerializeField] private bool _gravity;
-    // toggle gravity value, set to 0.1
+    // toggle gravity value, set to -0.1
     [SerializeField] private float _gravityVal;
     
     private PhysicsObject[] _lipids;
