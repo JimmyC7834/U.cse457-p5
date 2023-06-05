@@ -11,7 +11,7 @@ public class CellSimulation : MonoBehaviour
     // Set _radius to 200
     [SerializeField] private int _radius;
 
-    // Set _totalPoints to 8000000
+    // Set _totalPoints to 10000000
     [SerializeField] private int _totalPoints;
 
     // Set _spacing to 1
@@ -20,7 +20,7 @@ public class CellSimulation : MonoBehaviour
     // Set _bondRadius to 0.17
     [SerializeField] private float _bondRadius;
 
-    // Constant to tweak the amount of internal pressure there is, set to 0.5
+    // Constant to tweak the amount of internal pressure there is, set to 0.1
     [SerializeField] private float _pressure;
 
     // toggle gravity
@@ -80,7 +80,7 @@ public class CellSimulation : MonoBehaviour
 
     private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd) =>
         new SpringJoint(fst, snd, _profile.SpringConstant, Vector3.Distance(fst.Position, snd.Position),
-            _profile.MaxLength, _profile.MinLength, _profile.Damp, true);
+            _profile.MaxLength, _profile.MinLength, 0.4f, true);
 
     private PhysicsObject CreateLipid(Vector3 position) =>
         new PhysicsObject(_profile.LipidMass, 0f, position, Vector3.zero, Instantiate(_prefab, transform));
