@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Membrane
   m_EditorClassIdentifier: 
   _membraneJointSettings:
-    _springConstant: 1
+    _springConstant: 2
     _restLength: 0.3
     _damp: 1
     _maxLength: 0.45

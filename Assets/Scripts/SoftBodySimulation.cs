@@ -7,7 +7,10 @@ public class SoftBodySimulation
     private List<SpringJoint> _joints;
     private List<PhysicsObject> _nodes;
 
+    public SpringJoint[] Joints => _joints.ToArray();
+    
     public bool ShowDebug = false;
+    public bool ShowDisabled = false;
     public bool Enabled = false;
 
     public SoftBodySimulation()
@@ -55,7 +58,10 @@ public class SoftBodySimulation
     {
         PhysicsObject fst = joint.Fst;
         PhysicsObject snd = joint.Snd;
-        if (showDebug) Debug.DrawLine(fst.Position, snd.Position, (joint.Enabled) ? Color.white : Color.red);
+        if (showDebug && joint.Enabled)
+        {
+            Debug.DrawLine(fst.Position, snd.Position, Color.white);
+        }
         if (!joint.Enabled) return;
         
         float k = joint.K;

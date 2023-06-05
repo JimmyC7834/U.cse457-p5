@@ -2,53 +2,51 @@
 
 public class ContractileRing : MonoBehaviour
 {
-    public GameObject sphere;
-    public GameObject ring;
-    public GameObject cylinderPrefab;
-    public int numCylinders = 16;
-    public float height = 5f;
-    public float distance = 5f;
+    [SerializeField] private GameObject _sphere;
+    [SerializeField] private LineRenderer _LineRenderer;
+    [SerializeField] private float _height = 5f;
 
-    private GameObject[] cylinders;
+    [SerializeField] private GameObject[] _cylinders;
     private Vector3[] originalPositions;
 
     // Start is called before the first frame update
     void Start()
     {
-        sphere = GameObject.Find("Sphere");
-        ring = gameObject;
+        float sphereInitialY = _sphere.transform.position.y;
+        float ringInitialY = gameObject.transform.position.y;
+        // _height = sphereInitialY - ringInitialY;
 
-        float sphereInitialY = sphere.transform.position.y;
-        float ringInitialY = ring.transform.position.y;
-        height = sphereInitialY - ringInitialY;
-
-        cylinders = new GameObject[numCylinders];
-        originalPositions = new Vector3[numCylinders];
+        originalPositions = new Vector3[_cylinders.Length];
 
         // Store the references to the child cylinders and their original positions
-        for (int i = 0; i < ring.transform.childCount; i++)
+        for (int i = 0; i < _cylinders.Length; i++)
         {
-            cylinders[i] = ring.transform.GetChild(i).gameObject;
-            originalPositions[i] = cylinders[i].transform.position;
+            originalPositions[i] = _cylinders[i].transform.position;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!sphere) return;
+        if (!_sphere) return;
         
-        float sphereY = sphere.transform.position.y;
-        float heightChange = height - sphereY - 5.5f;
+        float sphereY = _sphere.transform.position.y;
+        float heightChange = _height - sphereY - 5.5f;
+        
+        Vector3[] positions = new Vector3[_cylinders.Length];
 
         // Update the positions of the cylinders based on the original positions
-        for (int i = 0; i < numCylinders; i++)
+        for (int i = 0; i < _cylinders.Length; i++)
         {
-            Vector3 direction = ring.transform.position - originalPositions[i];
+            Vector3 direction = gameObject.transform.position - originalPositions[i];
             direction = direction.normalized;
 
             Vector3 newPos = originalPositions[i] + direction * heightChange;
-            cylinders[i].transform.position = newPos;
+            _cylinders[i].transform.position = newPos;
+            positions[i] = _cylinders[i].transform.position;
         }
+        
+        _LineRenderer.SetPositions(positions);
+
     }
 }
