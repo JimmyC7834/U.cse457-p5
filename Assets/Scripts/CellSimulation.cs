@@ -82,13 +82,13 @@ public class CellSimulation : MonoBehaviour
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.transform.position = new Vector3(0, 10.0f, 0);
         Rigidbody gameObjectsRigidBody = sphere.AddComponent(typeof(Rigidbody)) as Rigidbody;
-        gameObjectsRigidBody.mass = 10;
+        gameObjectsRigidBody.mass = 100;
         gameObjectsRigidBody.useGravity = true; 
     }
 
     private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd) =>
         new SpringJoint(fst, snd, _profile.SpringConstant, Vector3.Distance(fst.Position, snd.Position),
-            _profile.MaxLength, _profile.MinLength, 0.4f, true);
+            _profile.MaxLength, _profile.MinLength, _profile.Damp, true);
 
     private PhysicsObject CreateLipid(Vector3 position) =>
         new PhysicsObject(_profile.LipidMass, 0f, position, Vector3.zero, Instantiate(_prefab, transform));
