@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -348,7 +348,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1440088345}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 4d9f5461b3f35254eb89d168d56e902e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -413,8 +413,8 @@ Transform:
   m_GameObject: {fileID: 1440088345}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -463,14 +463,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c6b68b3b010e56419d3af05b10840f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _profile: {fileID: 11400000, guid: f24d30839483d1540a40a550973329d7, type: 2}
+  _profile: {fileID: 11400000, guid: 5627fb71c842f554c91c5b113da5c618, type: 2}
   _prefab: {fileID: 8638088810488028794, guid: 2663d10db48868e4cbb6f3ad0491d64a, type: 3}
   _showDebug: 1
   _radius: 200
   _totalPoints: 8000000
   _spacing: 1
   _bondRadius: 0.17
-  _pressure: 0.5
+  _pressure: 0.1
   _gravity: 0
   _gravityVal: -0.05
 --- !u!1 &1660802279
