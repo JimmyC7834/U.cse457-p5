@@ -16,22 +16,22 @@ public class SoftBodySimulation
         _nodes = new List<PhysicsObject>();
     }
     
-    public void Update(float substep = 2)
+    public void Update(int substep = 2)
     {
         if (!Enabled) return;
         for (int i = 0; i < substep; i++)
         {
             // compute all the spring joint forces
             foreach (SpringJoint joint in _joints)
-                ComputeJointForce(joint, ShowDebug);
+                ComputeJointForce(joint, substep, ShowDebug);
             
             // update all nodes' physics
             foreach (PhysicsObject node in _nodes)
-                node.ComputePhysics();
+                node.ComputePhysics(substep);
             
             // solve for each constraints
             foreach (SpringJoint joint in _joints)
-                SolveDistanceConstraint(joint);
+                SolveDistanceConstraint(joint, substep);
             
             // compute move velocity
             foreach (PhysicsObject node in _nodes)
@@ -51,7 +51,7 @@ public class SoftBodySimulation
         _nodes.Add(node);
     }
 
-    public static void ComputeJointForce(SpringJoint joint, bool showDebug)
+    public static void ComputeJointForce(SpringJoint joint, int substep, bool showDebug)
     {
         PhysicsObject fst = joint.Fst;
         PhysicsObject snd = joint.Snd;
@@ -77,11 +77,11 @@ public class SoftBodySimulation
         Vector3 f = forceMag * dir;
         
         // apply half of the total force to each end
-        fst.AddForce(f - damp * fst.Velocity);
-        snd.AddForce(-f - damp * snd.Velocity);
+        fst.AddForce((f - damp * fst.Velocity)/substep);
+        snd.AddForce((-f - damp * snd.Velocity)/substep);
     }
 
-    public static void SolveDistanceConstraint(SpringJoint joint)
+    public static void SolveDistanceConstraint(SpringJoint joint, int substep)
     {
         if (!joint.Enabled) return;
         
@@ -96,8 +96,8 @@ public class SoftBodySimulation
             Vector3 dir = (snd.Position - fst.Position).normalized;
             float dD = dist - maxDist;
             Vector3 dx = dD * -.5f * dir;
-            fst.Rigidbody.position += -dx;
-            snd.Rigidbody.position += dx;
+            fst.Rigidbody.position += -dx / substep;
+            snd.Rigidbody.position += dx / substep;
         }
 
         if (dist < minDist)
@@ -105,8 +105,8 @@ public class SoftBodySimulation
             Vector3 dir = (snd.Position - fst.Position).normalized;
             float dD = dist - minDist;
             Vector3 dx = dD * -.5f * dir;
-            fst.Rigidbody.position += dx;
-            snd.Rigidbody.position += -dx;
+            fst.Rigidbody.position += dx / substep;
+            snd.Rigidbody.position += -dx / substep;
         }
     }
 
@@ -174,11 +174,11 @@ public class PhysicsObject
         Rigidbody.velocity = velocity;
     }
 
-    public void ComputePhysics()
+    public void ComputePhysics(int substep = 1)
     {
         PrevPosition = Position;
-        Rigidbody.velocity += Acceleration;
-        Rigidbody.position += Velocity;
+        Rigidbody.velocity += Acceleration / substep;
+        Rigidbody.position += Velocity  / substep;
         Acceleration = Vector3.zero;
     }
 

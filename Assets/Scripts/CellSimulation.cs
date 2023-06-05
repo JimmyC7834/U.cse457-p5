@@ -79,8 +79,10 @@ public class CellSimulation : MonoBehaviour
     }
 
     private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd) =>
-        new SpringJoint(fst, snd, _profile.SpringConstant, Vector3.Distance(fst.Position, snd.Position),
-            _profile.MaxLength, _profile.MinLength, _profile.Damp, true);
+        new SpringJoint(fst, snd, _profile.LipidJointSettings.SpringConstant,
+            Vector3.Distance(fst.Position, snd.Position),
+            _profile.LipidJointSettings.MaxLength, _profile.LipidJointSettings.MinLength,
+            _profile.LipidJointSettings.Damp, _profile.LipidJointSettings.BreakLength, true);
 
     private PhysicsObject CreateLipid(Vector3 position) =>
         new PhysicsObject(_profile.LipidMass, 0f, position, Vector3.zero, Instantiate(_prefab, transform));
