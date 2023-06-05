@@ -19,7 +19,7 @@ public class SoftBodySimulation
         _nodes = new List<PhysicsObject>();
     }
     
-    public void Update(int substep = 2)
+    public void Update(int substep = 3)
     {
         if (!Enabled) return;
         for (int i = 0; i < substep; i++)

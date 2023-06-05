@@ -20,9 +20,9 @@ MonoBehaviour:
     _minLength: 0
     _breakLength: 0
   _lipidJointSettings:
-    _springConstant: 6
+    _springConstant: 10
     _restLength: 0.75
-    _damp: 0.75
+    _damp: 1
     _maxLength: 2
     _minLength: 0
     _breakLength: 5
