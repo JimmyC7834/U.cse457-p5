@@ -7,7 +7,10 @@ public class SoftBodySimulation
     private List<SpringJoint> _joints;
     private List<PhysicsObject> _nodes;
 
+    public SpringJoint[] Joints => _joints.ToArray();
+    
     public bool ShowDebug = false;
+    public bool ShowDisabled = false;
     public bool Enabled = false;
 
     public SoftBodySimulation()
@@ -16,25 +19,27 @@ public class SoftBodySimulation
         _nodes = new List<PhysicsObject>();
     }
     
-    public void Update()
+    public void Update(int substep = 3)
     {
         if (!Enabled) return;
-        
-        // compute all the spring joint forces
-        foreach (SpringJoint joint in _joints)
-            ComputeJointForce(joint, ShowDebug);
-
-        // update all nodes' physics
-        foreach (PhysicsObject node in _nodes)
-            node.ComputePhysics();
-        
-        // solve for each constraints
-        foreach (SpringJoint joint in _joints)
-            SolveDistanceConstraint(joint);
-
-        // compute move velocity
-        foreach (PhysicsObject node in _nodes)
-            ComputeMoveVelocity(node);
+        for (int i = 0; i < substep; i++)
+        {
+            // compute all the spring joint forces
+            foreach (SpringJoint joint in _joints)
+                ComputeJointForce(joint, substep, ShowDebug);
+            
+            // update all nodes' physics
+            foreach (PhysicsObject node in _nodes)
+                node.ComputePhysics(substep);
+            
+            // solve for each constraints
+            foreach (SpringJoint joint in _joints)
+                SolveDistanceConstraint(joint, substep);
+            
+            // compute move velocity
+            foreach (PhysicsObject node in _nodes)
+                ComputeMoveVelocity(node);
+        }
     }
 
     public void AddJoint(SpringJoint joint)
@@ -49,18 +54,27 @@ public class SoftBodySimulation
         _nodes.Add(node);
     }
 
-    public static void ComputeJointForce(SpringJoint joint, bool showDebug)
+    public static void ComputeJointForce(SpringJoint joint, int substep, bool showDebug)
     {
+        PhysicsObject fst = joint.Fst;
+        PhysicsObject snd = joint.Snd;
+        if (showDebug && joint.Enabled)
+        {
+            Debug.DrawLine(fst.Position, snd.Position, Color.white);
+        }
         if (!joint.Enabled) return;
         
         float k = joint.K;
         float restLength = joint.RestLength;
-
-        PhysicsObject fst = joint.Fst;
-        PhysicsObject snd = joint.Snd;
         float damp = joint.Damp;
 
-        float dist = Vector3.Distance(snd.Position, fst.Position);
+        float dist = joint.Distance;
+        if (dist > joint.BreakLength)
+        {
+            joint.Enabled = false;
+            return;
+        }
+        
         Vector3 dir = (snd.Position - fst.Position).normalized;
 
         // contraction force of each end spring 
@@ -69,13 +83,11 @@ public class SoftBodySimulation
         Vector3 f = forceMag * dir;
         
         // apply half of the total force to each end
-        fst.AddForce(f - damp * fst.Velocity);
-        snd.AddForce(-f - damp * snd.Velocity);
-        
-        if (showDebug) Debug.DrawLine(fst.Position, snd.Position);
+        fst.AddForce((f - damp * fst.Velocity)/substep);
+        snd.AddForce((-f - damp * snd.Velocity)/substep);
     }
 
-    public static void SolveDistanceConstraint(SpringJoint joint)
+    public static void SolveDistanceConstraint(SpringJoint joint, int substep)
     {
         if (!joint.Enabled) return;
         
@@ -83,15 +95,15 @@ public class SoftBodySimulation
         float minDist = joint.MinDist;
         PhysicsObject fst = joint.Fst;
         PhysicsObject snd = joint.Snd;
-        float dist = Vector3.Distance(fst.Position, snd.Position);
+        float dist = joint.Distance;
 
         if (dist > maxDist)
         {
             Vector3 dir = (snd.Position - fst.Position).normalized;
             float dD = dist - maxDist;
             Vector3 dx = dD * -.5f * dir;
-            fst.Rigidbody.position += -dx;
-            snd.Rigidbody.position += dx;
+            fst.Rigidbody.position += -dx / substep;
+            snd.Rigidbody.position += dx / substep;
         }
 
         if (dist < minDist)
@@ -99,8 +111,8 @@ public class SoftBodySimulation
             Vector3 dir = (snd.Position - fst.Position).normalized;
             float dD = dist - minDist;
             Vector3 dx = dD * -.5f * dir;
-            fst.Rigidbody.position += dx;
-            snd.Rigidbody.position += -dx;
+            fst.Rigidbody.position += dx / substep;
+            snd.Rigidbody.position += -dx / substep;
         }
     }
 
@@ -110,22 +122,30 @@ public class SoftBodySimulation
     }
 }
 
-public struct SpringJoint
+public class SpringJoint
 {
-    public bool Enabled { get; private set; }
+    public bool Enabled;
     public float K { get; private set; }
     public float RestLength { get; private set; }
     public float MaxDist { get; private set; }
     public float MinDist { get; private set; }
     public float Damp { get; private set; }
+    public float BreakLength { get; private set; }
     public PhysicsObject Fst { get; private set; }
     public PhysicsObject Snd { get; private set; }
 
+    public float Distance => Vector3.Distance(Fst.Position, Snd.Position);
+
+    public SpringJoint(PhysicsObject fst, PhysicsObject snd, JointSettings settings, bool enabled)
+        : this(fst, snd, settings.SpringConstant, settings.RestLength,
+            settings.MaxLength, settings.MinLength, settings.Damp, settings.BreakLength , enabled) { }
+    
     public SpringJoint(
         PhysicsObject fst, PhysicsObject snd, float k, float restLength,
-        float maxDist, float minDist, float damp, bool enabled)
+        float maxDist, float minDist, float damp, float breakLength, bool enabled)
     {
         Assert.IsTrue(maxDist >= minDist);
+        Assert.IsTrue(fst != null && snd != null);
         
         Fst = fst;
         Snd = snd;
@@ -134,6 +154,7 @@ public struct SpringJoint
         MaxDist = maxDist;
         MinDist = minDist;
         Damp = damp;
+        BreakLength = breakLength;
         Enabled = enabled;
     }
 }
@@ -157,18 +178,14 @@ public class PhysicsObject
         Rigidbody = obj.GetComponent<Rigidbody>();
         Rigidbody.position = position;
         Rigidbody.velocity = velocity;
-        // PhysicsSimulation.SetWorldScale(obj.transform, new Vector3(scale, scale, scale));
     }
 
-    public void ComputePhysics()
+    public void ComputePhysics(int substep = 1)
     {
         PrevPosition = Position;
-        Rigidbody.velocity += Acceleration;
-        Rigidbody.position += Velocity;
+        Rigidbody.velocity += Acceleration / substep;
+        Rigidbody.position += Velocity  / substep;
         Acceleration = Vector3.zero;
-
-        // Update the transform of the actual game object
-        // Rigidbody.position = Position;
     }
 
     public void AddForce(Vector3 f)

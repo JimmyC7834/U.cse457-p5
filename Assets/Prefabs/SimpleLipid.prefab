@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8638088810488028772}
   - component: {fileID: 8638088810488028768}
   - component: {fileID: 8638088810488028769}
-  - component: {fileID: 3577880944361878895}
+  - component: {fileID: 4882796062837134586}
   m_Layer: 8
   m_Name: SimpleLipid
   m_TagString: Untagged
@@ -94,7 +94,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8638088810488028794}
   serializedVersion: 2
-  m_Mass: 10
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.1
   m_UseGravity: 0
@@ -116,8 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rigidbody: {fileID: 8638088810488028768}
   NeighborIndices: 
---- !u!136 &3577880944361878895
-CapsuleCollider:
+--- !u!135 &4882796062837134586
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -126,7 +126,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
+  serializedVersion: 2
   m_Radius: 0.4
-  m_Height: 1
-  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}

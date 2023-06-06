@@ -101,10 +101,10 @@ public class SimpleLipidManager : MonoBehaviour
 
     public void BondPhysicsUpdate(Rigidbody self, Rigidbody other)
     {
-        float maxDist = _profile.MaxLength;
+        float maxDist = _profile.MembraneJointSettings.MaxLength;
         
-        float k = _profile.SpringConstant;
-        float eqmDist = _profile.RestLength;
+        float k = _profile.MembraneJointSettings.SpringConstant;
+        float eqmDist = _profile.MembraneJointSettings.RestLength;
         
         float dist = Vector3.Distance(other.position, self.position);
         Vector3 dir = (other.position - self.position).normalized;
@@ -122,12 +122,9 @@ public class SimpleLipidManager : MonoBehaviour
 
         Vector3 v = forceMag * dir;
 
-        // if (self.position.y < -.75f) v += -(self.position - Vector3.down).normalized * 3f;
-        // if (other.position.y < -.75f) v += -(other.position - Vector3.down).normalized * 3f;
-        
         // apply half of the total force to each end
-        self.velocity += v / 2 - _profile.Damp * self.velocity;
-        other.velocity += -v / 2 - _profile.Damp * other.velocity;
+        self.velocity += v / 2 - _profile.MembraneJointSettings.Damp * self.velocity;
+        other.velocity += -v / 2 - _profile.MembraneJointSettings.Damp * other.velocity;
         
         if (_showDebug) Debug.DrawLine(self.position, other.position);
     }

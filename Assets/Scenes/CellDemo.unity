@@ -314,8 +314,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 122221466}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.43, y: -24.27, z: 0.08}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: -0.40433335, y: -1.37, z: 0.16086483}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -901,7 +901,7 @@ MonoBehaviour:
   _totalPoints: 10000000
   _spacing: 1
   _bondRadius: 0.17
-  _pressure: 0.1
+  _pressure: 0.3
   _gravity: 0
   _gravityVal: -0.05
 --- !u!1 &1660802279

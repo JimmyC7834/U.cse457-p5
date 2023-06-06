@@ -46,8 +46,7 @@ public class DemoSim : MonoBehaviour
     }
 
     private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd) =>
-        new SpringJoint(fst, snd, _profile.SpringConstant, _profile.RestLength,
-            _profile.MaxLength, _profile.MinLength, _profile.Damp, true);
+        new SpringJoint(fst, snd, _profile.MembraneJointSettings, true);
     
     private PhysicsObject CreateLipid(Vector3 position) =>
         new PhysicsObject(_profile.LipidMass, 0f, position, Vector3.zero, Instantiate(_prefab,transform));

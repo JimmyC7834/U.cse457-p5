@@ -12,10 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 971745630d73414408439e497724ee17, type: 3}
   m_Name: Demo
   m_EditorClassIdentifier: 
-  _springConstant: 2
-  _restLength: 0.5
-  _damp: 2
-  _maxLength: 0.7
-  _minLength: 0.3
+  _membraneJointSettings:
+    _springConstant: 2
+    _restLength: 0.5
+    _damp: 5
+    _maxLength: 0.75
+    _minLength: 0.25
+    _breakLength: 1
+  _lipidJointSettings:
+    _springConstant: 0
+    _restLength: 0
+    _damp: 0
+    _maxLength: 0
+    _minLength: 0
+    _breakLength: 0
   _lipidMass: 10
   _velocityRestitution: 0.9
