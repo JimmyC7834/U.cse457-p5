@@ -12,17 +12,11 @@ public class ContractileRing : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        float sphereInitialY = _sphere.transform.position.y;
-        float ringInitialY = gameObject.transform.position.y;
-        // _height = sphereInitialY - ringInitialY;
-
         originalPositions = new Vector3[_cylinders.Length];
 
         // Store the references to the child cylinders and their original positions
         for (int i = 0; i < _cylinders.Length; i++)
-        {
             originalPositions[i] = _cylinders[i].transform.position;
-        }
     }
 
     // Update is called once per frame
@@ -46,7 +40,7 @@ public class ContractileRing : MonoBehaviour
             positions[i] = _cylinders[i].transform.position;
         }
         
+        // update line renderer
         _LineRenderer.SetPositions(positions);
-
     }
 }

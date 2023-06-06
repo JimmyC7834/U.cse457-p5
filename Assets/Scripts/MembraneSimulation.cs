@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MembraneSimulation : MonoBehaviour
 {
@@ -50,8 +48,11 @@ public class MembraneSimulation : MonoBehaviour
     {
         if (!_softBodySimulation.Enabled) return;
         
+        // add gravity to the sphere
         _lipids[0].AddForce(_g * Vector3.down);
+        // update the simulation
         _softBodySimulation.Update();
+        // check and do the cleavage  
         CheckAndEnableJoint();
     }
 
@@ -66,37 +67,19 @@ public class MembraneSimulation : MonoBehaviour
         {
             float y1 = joint.Fst.Position.y;
             float y2 = joint.Snd.Position.y;
+            // simple interact detection toi cut off any joints interacting the plane
             if ((y1 > h && y2 < h) || (y1 < h && y2 > h))
-            {
                 joint.Enabled = false;
-            }
-            // if (y1 > h || y2 < h)
-            // {
-            //     joint.Enabled = false;
-            // }
         }
 
-        // int[] indices = new int[]
-        // {
-        //     167, 175,
-        //     111, 196,
-        //     112, 255,
-        //     154, 274,
-        //     175, 293,
-        //     196, 292,
-        //     255, 310,
-        //     274, 290,
-        //     293, 289,
-        //     292, 268,
-        //     310, 247,
-        //     290, 226,
-        //     289, 206,
-        //     268, 187,
-        //     247, 167,
-        //     226, 112,
-        //     206, 154,
-        // };
-        
+        // enable joints that helps to wrap the sphere in a certain distance
+        foreach (SpringJoint joint in _wrapJoints)
+        {
+            if (joint.Distance < _wrapDist || joint.Snd.Position.y < h)
+                joint.Enabled = true;
+        }
+
+        // resemble the closure of membrane ball        
         int[] indices = new int[]
         {
             215, 207,
@@ -104,13 +87,6 @@ public class MembraneSimulation : MonoBehaviour
             253, 169,
             173, 249
         };
-
-        foreach (SpringJoint joint in _wrapJoints)
-        {
-            if (joint.Distance < _wrapDist || joint.Snd.Position.y < h)
-                joint.Enabled = true;
-        }
-
         for (int i = 0; i < indices.Length; i += 2)
         {
             _softBodySimulation.AddJoint(CreateJoint(
@@ -140,6 +116,7 @@ public class MembraneSimulation : MonoBehaviour
         _softBodySimulation.AddNode(sphere);
         _lipids[0] = sphere;
         
+        // generate and place all lipids
         for (int i = 0; i < _membraneSize.x; i++)
         {
             for (int j = 0; j < _membraneSize.y; j++)
@@ -181,6 +158,7 @@ public class MembraneSimulation : MonoBehaviour
                         _lipids[index + _membraneSize.y]
                     ));
                 
+                // diagonal bonds
                 // if (j < _membraneSize.y - 1 && i < _membraneSize.x - 1)
                 //     _softBodySimulation.AddJoint(CreateJoint(
                 //         _lipids[index],
@@ -199,6 +177,7 @@ public class MembraneSimulation : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        // draw debug information
         Gizmos.color = Color.white;
         Gizmos.DrawWireCube(Vector3.up * _breakPlanePosition.y, new Vector3(10, 0, 10));
         Gizmos.color = Color.red;

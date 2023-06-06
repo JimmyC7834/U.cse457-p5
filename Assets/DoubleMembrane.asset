@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: DoubleMembrane
   m_EditorClassIdentifier: 
   _membraneJointSettings:
-    _springConstant: 2
+    _springConstant: 0.5
     _restLength: 0.5
     _damp: 1
-    _maxLength: 0.75
-    _minLength: 0.15
+    _maxLength: 5
+    _minLength: 3.4
     _breakLength: 5
   _lipidJointSettings:
-    _springConstant: 4
+    _springConstant: 1
     _restLength: 0.6
     _damp: 1
     _maxLength: 0.7
