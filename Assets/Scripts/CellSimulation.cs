@@ -11,7 +11,7 @@ public class CellSimulation : MonoBehaviour
     // Set _radius to 200
     [SerializeField] private int _radius;
 
-    // Set _totalPoints to 8000000
+    // Set _totalPoints to 10000000
     [SerializeField] private int _totalPoints;
 
     // Set _spacing to 1
@@ -20,7 +20,7 @@ public class CellSimulation : MonoBehaviour
     // Set _bondRadius to 0.17
     [SerializeField] private float _bondRadius;
 
-    // Constant to tweak the amount of internal pressure there is, set to 0.5
+    // Constant to tweak the amount of internal pressure there is, set to 0.1
     [SerializeField] private float _pressure;
 
     // toggle gravity
@@ -76,6 +76,14 @@ public class CellSimulation : MonoBehaviour
                 node.AddForce(new Vector3(0f, _gravityVal, 0f));
             i++;
         }
+    }
+
+    public void SpawnSphere() {
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.transform.position = new Vector3(0, 10.0f, 0);
+        Rigidbody gameObjectsRigidBody = sphere.AddComponent(typeof(Rigidbody)) as Rigidbody;
+        gameObjectsRigidBody.mass = 100;
+        gameObjectsRigidBody.useGravity = true; 
     }
 
     private SpringJoint CreateJoint(PhysicsObject fst, PhysicsObject snd) =>
