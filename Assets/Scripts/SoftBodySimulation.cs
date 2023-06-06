@@ -22,6 +22,7 @@ public class SoftBodySimulation
     public void Update(int substep = 3)
     {
         if (!Enabled) return;
+        // do the calculation in the substep times
         for (int i = 0; i < substep; i++)
         {
             // compute all the spring joint forces
@@ -97,6 +98,7 @@ public class SoftBodySimulation
         PhysicsObject snd = joint.Snd;
         float dist = joint.Distance;
 
+        // solve for max distance constraint
         if (dist > maxDist)
         {
             Vector3 dir = (snd.Position - fst.Position).normalized;
@@ -106,6 +108,7 @@ public class SoftBodySimulation
             snd.Rigidbody.position += dx / substep;
         }
 
+        // solve for min distance constraint
         if (dist < minDist)
         {
             Vector3 dir = (snd.Position - fst.Position).normalized;
@@ -180,7 +183,7 @@ public class PhysicsObject
         Rigidbody.velocity = velocity;
     }
 
-    public void ComputePhysics(int substep = 1)
+    public void ComputePhysics(int substep)
     {
         PrevPosition = Position;
         Rigidbody.velocity += Acceleration / substep;
